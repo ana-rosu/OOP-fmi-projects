@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 using namespace std;
+class Departament;
 
 class Voluntar {
 private:
@@ -57,7 +58,8 @@ public:
   operator bool();
   bool operator >(int);
   bool operator == (const Voluntar&);
-
+  friend Departament operator +(const Voluntar& v, const Departament&);
+  friend Departament operator+(const Departament&, const Voluntar& v);
   // Functii
   void afisare();
   void citire();
@@ -395,6 +397,8 @@ int Voluntar::nrZileDisp(){
         nr+=1;
   return nr;
 }
+// Operatorul + (adauga voluntar la departament)
+
 // Destructor
 Voluntar::~Voluntar(){
   if(this->nume != NULL){
@@ -637,90 +641,120 @@ Sponsor::~Sponsor(){
   }
 }
 
-enum plan {
-    gold, silver, bronze
-};
+// enum plan {
+//     gold, silver, bronze
+// };
 
 class Proiect {
 private:
-  static plan planuriParteneriat[3];
-  static int nrPlanuri;
+  // static plan planuriParteneriat[3];
+  // static int nrPlanuri;
   string denumireProiect;
   int durata; //nr zile
   double costuri;
   int nrVoluntari;
-  Voluntar* listaVoluntari;
-  int nrSponsori;
-  string* sponsori;
-  plan* planuriCumparate; 
-  float* preturiPlanuri;
+  // Voluntar* listaVoluntari;
+  // int nrSponsori;
+  // string* sponsori;
+  // plan* planuriCumparate; 
+  // float* preturiPlanuri;
 
 public:
   // Constructori
   Proiect();
   Proiect(string denumireProiect);
   Proiect(string denumireProiect, int durata, double costuri);
-  Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari, Voluntar* listaVoluntari, int nrSponsori, string* sponsori,plan* planuriCumparate, float* preturiPlanuri);
-  // Setters
+  Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari);
+  // Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari, Voluntar* listaVoluntari, int nrSponsori, string* sponsori,plan* planuriCumparate, float* preturiPlanuri);
+  // Setters, Getters
   void setCosturi(double costuri);
-  // Getters
   double getCosturi();
   // Copy Constructor
+  Proiect(const Proiect &p);
   // Operatori
+  Proiect& operator = (const Proiect& p);
   friend ostream& operator<<(ostream& out, const Proiect& p);
-  // Functii
+  friend istream& operator>>(istream& in, Proiect& p);
+  Proiect& operator++(); //pre
+  Proiect operator++(int); //post
+  Proiect operator +(float);
+  friend Proiect operator +(float, const Proiect&);
+  operator double();
+  bool operator <(int);
+  bool operator == (const Proiect&);
+  // Functionalitate
+  int nrVoluntariNecesari();
   // Destructor
   ~Proiect();
 
 };
 
-plan Proiect::planuriParteneriat[3] = {gold, silver, bronze};
-int Proiect::nrPlanuri = 3;
+// plan Proiect::planuriParteneriat[3] = {gold, silver, bronze};
+// int Proiect::nrPlanuri = 3;
+
 // Constructori
 Proiect::Proiect(){
   denumireProiect = "Anonim";
   durata = 0;
   costuri = 0;
   nrVoluntari = 0;
-  listaVoluntari = NULL;
-  nrSponsori = 0;
-  sponsori = NULL;
-  planuriCumparate = NULL;
-  preturiPlanuri = NULL;
+  // listaVoluntari = NULL;
+  // nrSponsori = 0;
+  // sponsori = NULL;
+  // planuriCumparate = NULL;
+  // preturiPlanuri = NULL;
+}
+Proiect::Proiect(string denumireProiect){
+  this->denumireProiect = denumireProiect;
+  durata = 0;
+  costuri = 0;
+  nrVoluntari = 0;
 }
 Proiect::Proiect(string denumireProiect, int durata, double costuri){
   this->denumireProiect = denumireProiect;
   this->durata = durata;
   this->costuri = costuri;
   nrVoluntari = 0;
-  listaVoluntari = NULL;
-  nrSponsori = 0;
-  sponsori = NULL;
-  planuriCumparate = NULL;
-  preturiPlanuri = NULL;
+  // listaVoluntari = NULL;
+  // nrSponsori = 0;
+  // sponsori = NULL;
+  // planuriCumparate = NULL;
+  // preturiPlanuri = NULL;
 }
-Proiect::Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari, Voluntar* listaVoluntari, int nrSponsori, string* sponsori,plan* planuriCumparate, float* preturiPlanuri){
+Proiect::Proiect(string denumireProiect, int durata, double costuri,int nrVoluntari){
   this->denumireProiect = denumireProiect;
   this->durata = durata;
   this->costuri = costuri;
-
   this->nrVoluntari = nrVoluntari;
-  this->listaVoluntari = new Voluntar[this->nrVoluntari];
-  for(int i = 0; i < this->nrVoluntari; i++)
-    this->listaVoluntari[i] = listaVoluntari[i];
-
-  this->nrSponsori = nrSponsori;
-  this->sponsori = new string[this->nrSponsori];
-  for(int i = 0; i < this->nrSponsori; i++)
-    this->sponsori[i] = sponsori[i];
-
-  for(int i = 0; i < this->nrSponsori; i++)
-    this->planuriCumparate[i] = planuriCumparate[i];
-
-  for(int i = 0; i < nrPlanuri; i++)
-    this->preturiPlanuri[i] = preturiPlanuri[i];
 }
+// Proiect::Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari, Voluntar* listaVoluntari, int nrSponsori, string* sponsori,plan* planuriCumparate, float* preturiPlanuri){
+  // this->denumireProiect = denumireProiect;
+  // this->durata = durata;
+  // this->costuri = costuri;
+
+  // this->nrVoluntari = nrVoluntari;
+  // this->listaVoluntari = new Voluntar[this->nrVoluntari];
+  // for(int i = 0; i < this->nrVoluntari; i++)
+  //   this->listaVoluntari[i] = listaVoluntari[i];
+
+  // this->nrSponsori = nrSponsori;
+  // this->sponsori = new string[this->nrSponsori];
+  // for(int i = 0; i < this->nrSponsori; i++)
+  //   this->sponsori[i] = sponsori[i];
+
+  // for(int i = 0; i < this->nrSponsori; i++)
+  //   this->planuriCumparate[i] = planuriCumparate[i];
+
+  // for(int i = 0; i < nrPlanuri; i++)
+  //   this->preturiPlanuri[i] = preturiPlanuri[i];
+// }
 // Copy constructor
+Proiect::Proiect(const Proiect &p){
+  this->denumireProiect = p.denumireProiect;
+  this->durata = p.durata;
+  this->costuri = p.costuri;
+  this->nrVoluntari = p.nrVoluntari;
+};
 // Setters
 void Proiect::setCosturi(double costuri){
   this->costuri = costuri;
@@ -730,70 +764,122 @@ double Proiect::getCosturi(){
   return this->costuri;
 }
 // Operatorul =
+Proiect& Proiect::operator=(const Proiect &p){
+  if(this!=&p){
+    this->denumireProiect = p.denumireProiect;
+    this->durata = p.durata;
+    this->costuri = p.costuri;
+    this->nrVoluntari = p.nrVoluntari;
+  }
+  return *this;
+}
 // Operatorul <<
 ostream& operator <<(ostream& out, const Proiect& p){
-  out<< "Afisare informatii relevante despre proiect: "<<endl;
   out<< "Denumire: "<< p.denumireProiect <<endl;
   out<< "Durata: "<< p.durata<<endl;
   out<< "Buget: "<< p.costuri<<endl;
-  if(p.nrSponsori == 0) 
-    out<<"Proiectul nu are sponsori!";
-  else{
-    out<< "Nr de sponsori: "<< p.nrSponsori<<endl;
-    out<< "Sponsori: ";
-    for(int i = 0; i < p.nrSponsori; i++)
-      out<<p.sponsori[i];
+  // if(p.nrSponsori == 0) 
+  //   out<<"Proiectul nu are sponsori!";
+  // else{
+  //   out<< "Nr de sponsori: "<< p.nrSponsori<<endl;
+  //   out<< "Sponsori: ";
+  //   for(int i = 0; i < p.nrSponsori; i++)
+  //     out<<p.sponsori[i];
 
-    out<<"Planuri cumparate: ";
-    for(int i = 0; i < p.nrSponsori; i++)
-      out<<p.planuriCumparate[i];
-  }
+  //   out<<"Planuri cumparate: ";
+  //   for(int i = 0; i < p.nrSponsori; i++)
+  //     out<<p.planuriCumparate[i];
+  // }
   if(p.nrVoluntari == 0){
      out<<"Proiectul nu are voluntari!";
   }
-  else{
+  else
   out<< "Nr de voluntari: "<< p.nrVoluntari<<endl;
-  out<< "Voluntari: ";
-  for(int i = 0; i < p.nrVoluntari; i++)
-    out<<p.listaVoluntari[i];
-  }
+  // out<< "Voluntari: ";
+  // for(int i = 0; i < p.nrVoluntari; i++)
+  //   out<<p.listaVoluntari[i];
+  // }
 
-  out<<"Preturi Planuri: ";
-  for(int i = 0; i < p.nrPlanuri; i++)
-    out<<p.preturiPlanuri[i];
+  // out<<"Preturi Planuri: ";
+  // for(int i = 0; i < p.nrPlanuri; i++)
+  //   out<<p.preturiPlanuri[i];
 
   return out;
 }
 // Operatorul >>
-// Operatorul []
-// Operatorul ++(post)
+istream& operator>>(istream& in, Proiect& p){
+  cout<<"Nume proiect: ";
+  in >> p.denumireProiect;
+  cout<<"Durata proiectului (nr. de zile): ";
+  in>> p.durata;
+  cout<<"Costuri: ";
+  in>>p.costuri;
+  cout<<"Nr de voluntari: ";
+  in>>p.nrVoluntari;
+  return in;
+}
 // Operatorul ++(pre)
+Proiect& Proiect::operator++(){
+  this->durata++;
+  return *this;
+}
+// Operatorul ++(post)
+Proiect Proiect::operator++(int){
+  Proiect aux(*this);
+  this->durata++;
+  return aux;
+}
 // Operatorul +(int)
-// Operatorul +(sponsor, int)
-// Operatorul -(int)
-// Operatorul -(sponsor, int)
-// Operatorul cast int
-// Operatorul <= suma
+Proiect Proiect::operator +(float x){
+  Proiect aux(*this);
+  aux.costuri += x;
+  return aux;
+}
+// Operatorul + (comutativiate)
+Proiect operator +(float x, const Proiect& p){
+  Proiect aux(p);
+  aux.costuri += x;
+  return aux;
+}
+// Operatorul cast double
+Proiect::operator double(){
+  return this->costuri;
+}
+// Operatorul < 
+bool Proiect::operator<(int nrZile){
+  return this->durata<nrZile;
+}
 // Operatorul ==
-// Functionalitate
+bool Proiect::operator==(const Proiect& p){
+  if(this->denumireProiect == p.denumireProiect &&
+  this->costuri == p.costuri &&
+  this->durata == p.durata &&
+  this->nrVoluntari == p.nrVoluntari)
+    return true;
+  return false;
+}
+// Functionalitate: nr de voluntari necesari bazat pe durata proiectului
+int Proiect::nrVoluntariNecesari(){
+  return this->durata*5;
+}
 // Destructor
 Proiect::~Proiect(){
-  if(this->listaVoluntari != NULL){
-    delete[] this->listaVoluntari;
-    this->listaVoluntari = NULL;
-  }
-  if(this->sponsori != NULL){
-    delete[] this->sponsori;
-    this->sponsori = NULL;
-  }
-  if(this->planuriCumparate != NULL){
-    delete[] this->planuriCumparate;
-    this->planuriCumparate = NULL;
-  }
-  if(this->preturiPlanuri != NULL){
-    delete[] this->preturiPlanuri;
-    this->preturiPlanuri = NULL;
-  }
+  // if(this->listaVoluntari != NULL){
+  //   delete[] this->listaVoluntari;
+  //   this->listaVoluntari = NULL;
+  // }
+  // if(this->sponsori != NULL){
+  //   delete[] this->sponsori;
+  //   this->sponsori = NULL;
+  // }
+  // if(this->planuriCumparate != NULL){
+  //   delete[] this->planuriCumparate;
+  //   this->planuriCumparate = NULL;
+  // }
+  // if(this->preturiPlanuri != NULL){
+  //   delete[] this->preturiPlanuri;
+  //   this->preturiPlanuri = NULL;
+  // }
 
 }
 // Sponsor* sponsoriUpdated = new Sponsor[nrSponsori+1];
@@ -838,7 +924,8 @@ public:
   bool operator ==(const Departament&);
   // Functii
   int voluntariActivi();
-  Departament adaugaVoluntar(const Voluntar& v);
+  friend Departament operator +(const Voluntar& v, const Departament&);
+  friend Departament operator+(const Departament&, const Voluntar& v);
   // Destructor
   ~Departament();
 };
@@ -990,17 +1077,70 @@ int Departament::voluntariActivi(){
         nr+=1;
   return nr;
 }
-// Operatorul + (adauga un voluntar la departament)
-// Departament Departament::adaugaVoluntar(const Voluntar& v){
-//   Voluntar* voluntariUpdated = new Voluntar[this->nrVoluntari+1];
-//   if(this->voluntari != NULL){
-//     for(int i=0; i < this->nrVoluntari; i++)
-//       voluntariUpdated[i] = this->voluntari[i];
+// Operatorul + intre departament si voluntar (adauga un voluntar la departament)
+Departament operator+(const Departament& d, const Voluntar& v){ 
+  Departament aux(d);
+
+  if(aux.voluntari != NULL){
+    delete[] aux.voluntari;
+    aux.voluntari = NULL;
+  }
+  aux.voluntari = new Voluntar[aux.nrVoluntari+1];
+
+  for(int i=0; i < d.nrVoluntari; i++)
+    aux.voluntari[i] = d.voluntari[i];
     
-//     delete[] this->voluntari;
+  aux.voluntari[aux.nrVoluntari] = v;
+  aux.nrVoluntari++;
+  return aux;
+}
+Departament operator+(const Voluntar& v, const Departament& d){ 
+  Departament aux(d);
+
+  if(aux.voluntari != NULL){
+    delete[] aux.voluntari;
+    aux.voluntari = NULL;
+  }
+  aux.voluntari = new Voluntar[aux.nrVoluntari+1];
+
+  for(int i=0; i < d.nrVoluntari; i++)
+    aux.voluntari[i] = d.voluntari[i];
+    
+  aux.voluntari[aux.nrVoluntari] = v;
+  aux.nrVoluntari++;
+  return aux;
+}
+// Departament Departament::operator+(const Voluntar& v){ 
+//   Departament aux(*this);
+
+//   if(aux.voluntari != NULL){
+//     delete[] aux.voluntari;
+//     aux.voluntari = NULL;
 //   }
-//   voluntariUpdated[nrVoluntari] = v;
-//   this->voluntari = voluntariUpdated;
+//   aux.voluntari = new Voluntar[aux.nrVoluntari+1];
+
+//   for(int i=0; i < this->nrVoluntari; i++)
+//     aux.voluntari[i] = this->voluntari[i];
+    
+//   aux.voluntari[aux.nrVoluntari] = v;
+//   aux.nrVoluntari++;
+//   return aux;
+// }
+// Departament Voluntar::operator+(const Departament& d){ 
+//   Departament aux(d);
+
+//   if(aux.voluntari != NULL){
+//     delete[] aux.voluntari;
+//     aux.voluntari = NULL;
+//   }
+//   aux.voluntari = new Voluntar[aux.nrVoluntari+1];
+
+//   for(int i=0; i < d.nrVoluntari; i++)
+//     aux.voluntari[i] = d.voluntari[i];
+    
+//   aux.voluntari[aux.nrVoluntari] = (*this);
+//   aux.nrVoluntari++;
+//   return aux;
 // }
 // Destructor
 Departament::~Departament(){
@@ -1059,14 +1199,52 @@ int main(){
           break;
         }
         case 3:{
-
           break;
         }
         case 4:{
-
-        }
-        case 5:
+          Voluntar V;
+          cin>>V;
+          listaVoluntari[contorVoluntari] = V;
+          contorVoluntari++;
+          cout<<"Voluntarul a fost creat cu succes";
           break;
+        }
+        case 5:{
+          Departament D;
+          cin>>D;
+          listaDepartamente[contorDepartamente] = D;
+          contorDepartamente++;
+          cout<<"Departamentul a fost creat cu succes";
+          break;
+        }
+        case 6:{
+          break;
+        }
+        case 7:{
+        cout<<"LISTA DE VOLUNTARI: \n";
+        for(int i = 0; i < contorVoluntari; i++)
+            cout<<listaVoluntari[i]<<endl;
+        cout<<"Intrpduceti ID-ul voluntarului pe care vreti sa-l modificati: ";
+        int input;
+        cin>>input;
+        for(int i = 0; i < contorVoluntari; i++)
+          if(input == listaVoluntari[i].getIdVoluntar())
+            cin>>listaVoluntari[i];
+        cout<<"Datele voluntarului cu ID-ul "<<input<<" au fost modificate cu succes.";
+        break;
+        }
+        case 8:{
+          break;
+        }
+        case 9:{
+          break;
+        }
+        case 10:{
+          break;
+        }
+        case 11:{
+          break;
+        }
         default:{
           cout<<"Comanda invalida.";
           break;
@@ -1089,25 +1267,15 @@ int main(){
       break;
     }
   }
-  // bool d[7] = {0,0,1,1,0,1,0};
- 
-  // float f[2]={100.1, 200.0};
-  // Sponsor s1("Adobe", 1000000.31, 2, f);
-
-  // Voluntar lv[2] = {V, V1};
-  // float preturi[3] = {100.0, 200.0, 300.0};
-
-  // Proiect p1("Zilele ASMI", 3, 250.0, 2, lv, 0, nullptr, nullptr, preturi);
-
-  // cout<<p1;
   return 0;
 }
 
 
 
-// meniu 
-//selecteaza tipul userului 1. admin, 2.voluntar, 3.sponsor
-//1. => adauga voluntar, sterge voluntar, modifica voluntar, afiseaza voluntari, proiecte, departamente
-//2. => update date, inscrie te in departament/proiect, iesi din asociatie (delete)
-//3. => afiseaza proiecte cu planurile parteneriale, sponsorizeaza proiect
+// Meniu - Schita
+// Selecteaza tipul userului 1. Admin, 2. Voluntar, 3. Sponsor
+//1. => CRUD voluntari, proiecte, departamente
+//2. => RU proiecte, departamente (voluntarul se poate inscrie in departament/proiect)
+//   => voluntarul poate iesi din asociatie (delete)
+//3. => RU proiecte (sponsorizeaza proiect)
 

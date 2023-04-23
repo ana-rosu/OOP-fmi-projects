@@ -34,12 +34,12 @@ public:
 
   // Getters
   int getIdVoluntar() const;
-  char* getNume();
+  const char* getNume() const;
   string getPrenume();
   string getNumeDepartament();
   int getVarsta();
   char getSex();
-  bool* getDisponibilitate();
+  const bool* getDisponibilitate() const;
   bool getEsteActiv();
 
   // Copy Constructor
@@ -172,10 +172,8 @@ void Voluntar::setEsteActiv(bool esteActiv){
 int Voluntar::getIdVoluntar() const{
   return this->idVoluntar;
 };
-char* Voluntar::getNume(){
-  char* aux = new char[strlen(this->nume)+1];
-  strcpy(aux, this->nume);
-  return aux;
+const char* Voluntar::getNume() const{
+  return this->nume;
 };
 string Voluntar::getPrenume(){
   return this->prenume;
@@ -189,11 +187,8 @@ int Voluntar::getVarsta(){
 char Voluntar::getSex(){
   return this->sex;
 };
-bool* Voluntar::getDisponibilitate(){
-  bool* aux = new bool[7];
-  for(int i = 0; i < 7; i++)
-    aux[i] = this->disponibilitate[i];
-  return aux;
+const bool* Voluntar::getDisponibilitate() const{
+  return this->disponibilitate;
 }
 bool Voluntar::getEsteActiv(){
   return this->esteActiv;
@@ -274,7 +269,7 @@ istream& operator >>(istream& in, Voluntar& v){
   in >> v.varsta;
   cout<< "Sex: ";
   in >> v.sex;
-  cout<< "Voluntar activ: ";
+  cout<< "Voluntar activ [0/1]: ";
   in >> v.esteActiv;
   cout<< "Disponibilitate: "<<endl;
   if (v.disponibilitate != NULL){
@@ -282,7 +277,7 @@ istream& operator >>(istream& in, Voluntar& v){
     v.disponibilitate = NULL;
   }
   v.disponibilitate = new bool[7];
-  string zile[7] = {"Luni: ", "Marti: ", "Miercuri: ", "Joi: ", "Vineri: ", "Sambata: ","Duminica: "};
+  string zile[7] = {"Luni [0/1]: ", "Marti [0/1]: ", "Miercuri [0/1]: ", "Joi [0/1]: ", "Vineri [0/1]: ", "Sambata [0/1]: ","Duminica [0/1]: "};
   for(int i=0; i<7; i++){
     cout<<zile[i];
     in>> v.disponibilitate[i];
@@ -365,19 +360,14 @@ cout<< "Nume: ";
   }
   this->nume = new char[strlen(aux)+1];
   strcpy(this->nume, aux);
-
   cout<< "Prenume: ";
   cin >> this->prenume;
-
   cout<< "Nume departament: ";
   cin >> this->numeDepartament;
-
   cout<< "Varsta: ";
   cin >> this->varsta;
-
   cout<< "Sex: ";
   cin >> this->sex;
-
   cout<< "Voluntar activ: ";
   cin >> this->esteActiv;
 
@@ -397,7 +387,6 @@ int Voluntar::nrZileDisp(){
         nr+=1;
   return nr;
 }
-// Operatorul + (adauga voluntar la departament)
 
 // Destructor
 Voluntar::~Voluntar(){
@@ -632,7 +621,6 @@ bool Sponsor::operator==(const Sponsor& s){
   
   return false;
 }
-// Functionalitate
 // Destructor
 Sponsor::~Sponsor(){
   if(this->sponsorizari != NULL){
@@ -647,6 +635,8 @@ Sponsor::~Sponsor(){
 
 class Proiect {
 private:
+  const int idProiect;
+  static int contorId;
   // static plan planuriParteneriat[3];
   // static int nrPlanuri;
   string denumireProiect;
@@ -667,6 +657,7 @@ public:
   Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari);
   // Proiect(string denumireProiect, int durata, double costuri, int nrVoluntari, Voluntar* listaVoluntari, int nrSponsori, string* sponsori,plan* planuriCumparate, float* preturiPlanuri);
   // Setters, Getters
+  int getIdProiect()const;
   void setCosturi(double costuri);
   double getCosturi();
   // Copy Constructor
@@ -688,12 +679,12 @@ public:
   ~Proiect();
 
 };
-
+int Proiect::contorId = 500;
 // plan Proiect::planuriParteneriat[3] = {gold, silver, bronze};
 // int Proiect::nrPlanuri = 3;
 
 // Constructori
-Proiect::Proiect(){
+Proiect::Proiect():idProiect(contorId++){
   denumireProiect = "Anonim";
   durata = 0;
   costuri = 0;
@@ -704,13 +695,13 @@ Proiect::Proiect(){
   // planuriCumparate = NULL;
   // preturiPlanuri = NULL;
 }
-Proiect::Proiect(string denumireProiect){
+Proiect::Proiect(string denumireProiect):idProiect(contorId++){
   this->denumireProiect = denumireProiect;
   durata = 0;
   costuri = 0;
   nrVoluntari = 0;
 }
-Proiect::Proiect(string denumireProiect, int durata, double costuri){
+Proiect::Proiect(string denumireProiect, int durata, double costuri):idProiect(contorId++){
   this->denumireProiect = denumireProiect;
   this->durata = durata;
   this->costuri = costuri;
@@ -721,7 +712,7 @@ Proiect::Proiect(string denumireProiect, int durata, double costuri){
   // planuriCumparate = NULL;
   // preturiPlanuri = NULL;
 }
-Proiect::Proiect(string denumireProiect, int durata, double costuri,int nrVoluntari){
+Proiect::Proiect(string denumireProiect, int durata, double costuri,int nrVoluntari):idProiect(contorId++){
   this->denumireProiect = denumireProiect;
   this->durata = durata;
   this->costuri = costuri;
@@ -749,7 +740,7 @@ Proiect::Proiect(string denumireProiect, int durata, double costuri,int nrVolunt
   //   this->preturiPlanuri[i] = preturiPlanuri[i];
 // }
 // Copy constructor
-Proiect::Proiect(const Proiect &p){
+Proiect::Proiect(const Proiect &p):idProiect(contorId++){
   this->denumireProiect = p.denumireProiect;
   this->durata = p.durata;
   this->costuri = p.costuri;
@@ -760,6 +751,9 @@ void Proiect::setCosturi(double costuri){
   this->costuri = costuri;
 }
 // Getters
+int Proiect::getIdProiect()const{
+  return this->idProiect;
+};
 double Proiect::getCosturi(){
   return this->costuri;
 }
@@ -775,6 +769,7 @@ Proiect& Proiect::operator=(const Proiect &p){
 }
 // Operatorul <<
 ostream& operator <<(ostream& out, const Proiect& p){
+  out<< "ID: "<< p.idProiect<<endl;
   out<< "Denumire: "<< p.denumireProiect <<endl;
   out<< "Durata: "<< p.durata<<endl;
   out<< "Buget: "<< p.costuri<<endl;
@@ -895,6 +890,8 @@ Proiect::~Proiect(){
 
 class Departament {
 private:
+  const int idDepartament;
+  static int contorId;
   string denumire;
   string rol;
   int nrVoluntari;
@@ -906,10 +903,10 @@ public:
   Departament(string denumire);
   Departament(string denumire, string rol);
   Departament(string denumire, string rol, int nrVoluntari, Voluntar* voluntari, int aniDeActivitate);
-  // Setters
-  // Getters
   // Copy Constructor
   Departament(const Departament&);
+  //Getters
+  int getIdDepartament() const;
   // Operatori
   Departament& operator =(const Departament&);
   friend ostream& operator <<(ostream& out, const Departament&);
@@ -929,29 +926,30 @@ public:
   // Destructor
   ~Departament();
 };
+int Departament::contorId = 1000;
 // Constructori
-Departament::Departament(){
+Departament::Departament():idDepartament(contorId++){
   denumire = "Departamentul X";
   rol = "Departamentul X isi propune sa Y";
   nrVoluntari = 0;
   voluntari = NULL;
   aniDeActivitate = 0;
 }
-Departament::Departament(string denumire){
+Departament::Departament(string denumire):idDepartament(contorId++){
   this->denumire = denumire;
   rol = "Departamentul X isi propune sa Y";
   nrVoluntari = 0;
   voluntari = NULL;
   aniDeActivitate = 0;
 }
-Departament::Departament(string denumire, string rol){
+Departament::Departament(string denumire, string rol):idDepartament(contorId++){
   this->denumire = denumire;
   this->rol = rol;
   nrVoluntari = 0;
   voluntari = NULL;
   aniDeActivitate = 0;
 }
-Departament::Departament(string denumire, string rol,  int nrVoluntari, Voluntar* voluntari, int aniDeActivitate){
+Departament::Departament(string denumire, string rol,  int nrVoluntari, Voluntar* voluntari, int aniDeActivitate):idDepartament(contorId++){
   this->denumire = denumire;
   this->rol = rol;
   this->nrVoluntari = nrVoluntari;
@@ -962,7 +960,7 @@ Departament::Departament(string denumire, string rol,  int nrVoluntari, Voluntar
   this->aniDeActivitate = aniDeActivitate;
 }
 // Copy constructor
-Departament::Departament(const Departament& d){
+Departament::Departament(const Departament& d):idDepartament(contorId++){
   this->denumire = d.denumire;
   this->rol = d.rol;
   this->nrVoluntari = d.nrVoluntari;
@@ -971,6 +969,10 @@ Departament::Departament(const Departament& d){
     this->voluntari[i] = d.voluntari[i];
   this->aniDeActivitate = d.aniDeActivitate;
 };
+// Getters
+int Departament::getIdDepartament()const {
+  return this->idDepartament;
+}
 // Operatorul =
 Departament& Departament::operator=(const Departament& d){
   if(this!=&d){
@@ -998,6 +1000,7 @@ Voluntar Departament::operator [](int i){
 }
 // Operatorul <<
 ostream& operator <<(ostream& out, const Departament& d){
+  out<< "ID: "<< d.idDepartament<<endl;
   out<<"Nume departament: "<<d.denumire<<endl;
   out<<"Scop: "<<d.rol<<endl;
   if(d.nrVoluntari!=0){
@@ -1161,7 +1164,7 @@ int main(){
   Voluntar V3(nume3, "Paul");
   int contorVoluntari = 3;
   Voluntar listaVoluntari[100] = {V1, V2, V3};
-
+  
 // Departamente
   Departament D1("HR","Noi suntem, pe scurt, \"inima Asociatiei\"! Ne asiguram de dezvoltarea si motivarea constanta a voluntarilor nostri prin organizarea activitatilor de socializare.");
   Departament D2("Design","Daca am putea descrie acest departament in doua cuvinte acelea sigur ar fi \"imaginea Asociatiei\".");
@@ -1171,99 +1174,308 @@ int main(){
   Departament listaDepartamente[10] = {D1,D2,D3,D4};
 
 // Proiecte
+  Proiect P1("Zilele ASMI", 7, 500.0, 30);
+  Proiect P2("Mentoratul de o zi", 1, 100.0, 20);
+  int contorProiecte = 2;
+  Proiect listaProiecte[10] = {P1,P2};
+
+// Sponsori
+  Sponsor S1;
+  Sponsor S2;
+
   system("cls");
   cout << "Bine ai venit la asociatia de voluntariat ASMI!\n\n";
   cout <<"Selecteaza tipul userului: \n1. Admin\n2. Voluntar\n3. Sponsor\n\n";
+
+  
   int user;
   cin>>user;
   
   switch(user) {
     // ADMIN
     case 1:{
+      int actiune=1;
+      while(actiune){
       system("cls");
-      cout<<"Buna ziua, Admin!\n\nSelectati tipul de actiune pe care doriti sa o efectuati: \n1. Afiseaza lista de voluntari\n2. Afiseaza lista de departamente\n3. Afiseaza lista de proiecte\n\n4. Creeaza voluntar\n5. Creeaza departament\n6. Creeaza proiect\n\n7. Modifica voluntar\n8. Modifica departament\n9. Modifica proiect\n\n10. Sterge voluntar\n11. Sterge departament\n10. Sterge proiect\n\n11. Exit\n\n";
-      int actiune;
+      cout<<"Buna ziua, Admin!\n\nSelectati tipul de actiune pe care doriti sa o efectuati: \n1. Afiseaza lista de voluntari\n2. Afiseaza lista de departamente\n3. Afiseaza lista de proiecte\n\n4. Creeaza voluntar\n5. Creeaza departament\n6. Creeaza proiect\n\n7. Modifica voluntar\n8. Modifica departament\n9. Modifica proiect\n\n10. Sterge voluntar\n11. Sterge departament\n12. Sterge proiect\n\n0. Exit\n\n";
       cin>>actiune;
-      switch(actiune){
-        case 1:{
-          system("cls");
-          for(int i = 0; i < contorVoluntari; i++)
-            cout<<listaVoluntari[i]<<endl;
+        switch(actiune){
+          case 1:{
+            system("cls");
+            for(int i = 0; i < contorVoluntari; i++)
+              cout<<listaVoluntari[i]<<endl;
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 2:{
+            system("cls");
+            for(int i = 0; i < contorDepartamente; i++)
+              cout<<listaDepartamente[i]<<endl;
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 3:{
+            system("cls");
+            for(int i = 0; i < contorProiecte; i++)
+              cout<<listaProiecte[i]<<endl;
 
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 4:{
+            Voluntar V;
+            cin>>V;
+            listaVoluntari[contorVoluntari++] = V;
+            cout<<"Voluntarul a fost creat cu succes";
+
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 5:{
+            Departament D;
+            cin>>D;
+            listaDepartamente[contorDepartamente++] = D;
+            cout<<"Departamentul a fost creat cu succes";
+            
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 6:{
+            Proiect P;
+            cin>>P;
+            listaProiecte[contorProiecte++] = P;
+            cout<<"Proiectul a fost creat cu succes";
+
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 7:{
+          // Modifica voluntar
+          cout<<"LISTA DE VOLUNTARI: \n";
+          for(int i = 0; i < contorVoluntari; i++)
+              cout<<listaVoluntari[i]<<endl;
+          cout<<"Introduceti ID-ul voluntarului pe care vreti sa-l modificati: ";
+          int input;
+          cin>>input;
+          bool gasit = false;
+          for(int i = 0; i < contorVoluntari; i++)
+            if(input == listaVoluntari[i].getIdVoluntar()){
+              gasit = true;
+              cin>>listaVoluntari[i];
+            }
+          (gasit) ? cout<<"Datele voluntarului cu ID-ul "<<input<<" au fost modificate cu succes.\n" : cout<<"ID inexistent!\n";
+          cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+          cin>>actiune;
           break;
-        }
-        case 2:{
-          system("cls");
+          }
+          case 8:{
+          // Modifica departament
+          cout<<"LISTA DE DEPARTAMENTE: \n";
           for(int i = 0; i < contorDepartamente; i++)
-            cout<<listaDepartamente[i]<<endl;
+              cout<<listaDepartamente[i]<<endl;
+          cout<<"Introduceti ID-ul departamentului pe care vreti sa-l modificati: ";
+          int input;
+          bool gasit = false;
+          cin>>input;
+          for(int i = 0; i < contorDepartamente; i++)
+            if(input == listaDepartamente[i].getIdDepartament()){
+              cin>>listaDepartamente[i];
+              gasit = true;
+            }
+          (gasit) ? cout<<"Datele departamentului cu ID-ul "<<input<<" au fost modificate cu succes.\n" : cout<<"ID inexistent!\n";
+          cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+          cin>>actiune;
+            break;
+          }
+          case 9:{
+          // Modifica proiect
+          cout<<"LISTA DE PROIECTE: \n";
+          for(int i = 0; i < contorProiecte; i++)
+              cout<<listaProiecte[i]<<endl;
+          cout<<"Introduceti ID-ul proiectului pe care vreti sa-l modificati: ";
+          int input;
+          bool gasit=false;
+          cin>>input;
+          for(int i = 0; i < contorProiecte; i++)
+            if(input == listaProiecte[i].getIdProiect()){
+              gasit = true;
+              cin>>listaProiecte[i];
+            }
+          (gasit) ? cout<<"Datele proiectului cu ID-ul "<<input<<" au fost modificate cu succes.\n" : cout<<"ID inexistent!\n";
+          cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+          cin>>actiune;
+            break;
+          }
+          case 10:{
+          // Sterge voluntar
+          int input;
+          cout<<"\nIntroduceti ID-ul voluntarului pe care doriti sa-l stergeti:";
+          cin>>input;
+          Voluntar* aux = new Voluntar[contorVoluntari];
+          for(int i = 0; i < contorVoluntari; i++)
+            if(input != listaVoluntari[i].getIdVoluntar())
+              aux[i] = listaVoluntari[i];
+          contorVoluntari--;
+          for(int i = 0; i < contorVoluntari; i++)
+            listaVoluntari[i] = aux[i];
+          delete[] aux;
+
+          cout<<"Ati sters cu succes voluntarul cu ID-ul "<<input<<" din asociatie!";
+          cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+          cin>>actiune;
           break;
+          }
+          case 11:{
+          // Sterge departament
+           int input;
+          cout<<"\nIntroduceti ID-ul departamentului pe care doriti sa-l stergeti:";
+          cin>>input;
+          Departament* aux = new Departament[contorDepartamente];
+          for(int i = 0; i < contorDepartamente; i++)
+            if(input != listaDepartamente[i].getIdDepartament())
+              aux[i] = listaDepartamente[i];
+          contorDepartamente--;
+          for(int i = 0; i < contorDepartamente; i++)
+            listaDepartamente[i] = aux[i];
+          delete[] aux;
+
+          cout<<"Ati sters cu succes departamentul cu ID-ul "<<input<<"!";
+          cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+          cin>>actiune;
+            break;
+          }
+          case 12:{
+          // Sterge proiect
+           int input;
+          cout<<"\nIntroduceti ID-ul proiectului pe care doriti sa-l stergeti:";
+          cin>>input;
+          Proiect* aux = new Proiect[contorProiecte];
+          for(int i = 0; i < contorProiecte; i++)
+            if(input != listaProiecte[i].getIdProiect())
+              aux[i] = listaProiecte[i];
+          contorProiecte--;
+          for(int i = 0; i < contorProiecte; i++)
+            listaProiecte[i] = aux[i];
+          delete[] aux;
+
+          cout<<"Ati sters cu succes proiectul cu ID-ul "<<input<<" !";
+          cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+          cin>>actiune;
+            break;
+          }
         }
-        case 3:{
-          break;
-        }
-        case 4:{
-          Voluntar V;
-          cin>>V;
-          listaVoluntari[contorVoluntari] = V;
-          contorVoluntari++;
-          cout<<"Voluntarul a fost creat cu succes";
-          break;
-        }
-        case 5:{
-          Departament D;
-          cin>>D;
-          listaDepartamente[contorDepartamente] = D;
-          contorDepartamente++;
-          cout<<"Departamentul a fost creat cu succes";
-          break;
-        }
-        case 6:{
-          break;
-        }
-        case 7:{
-        cout<<"LISTA DE VOLUNTARI: \n";
-        for(int i = 0; i < contorVoluntari; i++)
-            cout<<listaVoluntari[i]<<endl;
-        cout<<"Intrpduceti ID-ul voluntarului pe care vreti sa-l modificati: ";
-        int input;
-        cin>>input;
-        for(int i = 0; i < contorVoluntari; i++)
-          if(input == listaVoluntari[i].getIdVoluntar())
-            cin>>listaVoluntari[i];
-        cout<<"Datele voluntarului cu ID-ul "<<input<<" au fost modificate cu succes.";
-        break;
-        }
-        case 8:{
-          break;
-        }
-        case 9:{
-          break;
-        }
-        case 10:{
-          break;
-        }
-        case 11:{
-          break;
-        }
-        default:{
-          cout<<"Comanda invalida.";
-          break;
-        }
+
       }
       break;
     }
     // VOLUNTAR
     case 2: {
-      cout<<"Meniul pentru voluntar este in curs de dezvoltare."<<endl;
-      break;
+      int actiune=1;
+      while(actiune){
+        system("cls");
+        cout<<"Buna ziua, voluntar!\n\nSelectati tipul de actiune pe care doriti sa o efectuati: \n1. Afiseaza proiecte\n2. Inscrie-te intr-un proiect\n\n3. Afiseaza departamente\n4. Inscrie-te intr-un departament\n\n5. Updateaza-ti datele\n6. Iesi din asociatie\n\n0. Exit\n\n";
+        cin>>actiune;
+        switch (actiune){
+          case 1:{
+            system("cls");
+            for(int i = 0; i < contorProiecte; i++)
+              cout<<listaProiecte[i]<<endl;
+
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 2:{
+            
+            break;
+          }
+          case 3:{
+            system("cls");
+            for(int i = 0; i < contorDepartamente; i++)
+              cout<<listaDepartamente[i]<<endl;
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 4:{
+            break;
+          }
+          case 5:{
+            cout<<"Introduceti-va ID-ul: ";
+            int input;
+            cin>>input;
+            bool gasit = false;
+            for(int i = 0; i < contorVoluntari; i++)
+              if(input == listaVoluntari[i].getIdVoluntar()){
+                gasit = true;
+                cin>>listaVoluntari[i];
+              }
+            (gasit) ? cout<<"Datele dvs "<<input<<" au fost modificate cu succes.\n" : cout<<"ID inexistent!\n";
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 6:{
+              // Sterge voluntar
+              int input;
+              cout<<"Sunteti sigur ca doriti sa iesiti din asociatie?[0/1]:";
+              cin>>input;
+              (input == 1) ? cout<<"\nIntroduceti-va ID-ul:": cout<<"Ok. Nu ati parasit asociatia.";
+              if (input){
+                cin>>input;
+                bool gasit = false;
+                Voluntar* aux = new Voluntar[contorVoluntari];
+                for(int i = 0; i < contorVoluntari; i++)
+                  if(input != listaVoluntari[i].getIdVoluntar())
+                    aux[i] = listaVoluntari[i];
+                  else gasit = true;
+                contorVoluntari--;
+                for(int i = 0; i < contorVoluntari; i++)
+                  listaVoluntari[i] = aux[i];
+                delete[] aux;
+
+                (gasit) ? cout<<"Ati iesit din asociatie! Multumim pentru tot sprijinul acordat de-a lungul timpului!\n" : cout<<"ID inexistent!\n";
+                cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+                cin>>actiune;
+              }
+              break;
+          }
+        }
+    }
+    break;
     }
     // SPONSOR
     case 3:{
-      cout<<"Meniul pentru sponsor este in curs de dezvoltare."<<endl;
-      break;
+      int actiune=1;
+      while(actiune){
+        system("cls");
+        cout<<"Buna ziua, sponsor!\n\nSelectati tipul de actiune pe care doriti sa o efectuati: \n1. Afiseaza proiecte\n2. Sponsorizeaza un proiect\n2. Afiseaza proiecte sponsorizate\n\n0. Exit\n\n";
+        cin>>actiune;
+        switch (actiune){
+          case 1:{
+            system("cls");
+            for(int i = 0; i < contorProiecte; i++)
+              cout<<listaProiecte[i]<<endl;
+
+            cout<<"Doriti sa efectuati si alta actiune?[0/1] ";
+            cin>>actiune;
+            break;
+          }
+          case 2:{
+            break;
+          }
+        }
+      }
+    break;
     }
     default: {
-      cout<<"\tUser invalid!";
+      cout<<"User invalid!";
       break;
     }
   }
@@ -1273,9 +1485,9 @@ int main(){
 
 
 // Meniu - Schita
-// Selecteaza tipul userului 1. Admin, 2. Voluntar, 3. Sponsor
+// Selecteaza tipul userului: 1. Admin, 2. Voluntar, 3. Sponsor
 //1. => CRUD voluntari, proiecte, departamente
-//2. => RU proiecte, departamente (voluntarul se poate inscrie in departament/proiect)
-//   => voluntarul poate iesi din asociatie (delete)
+//2. => RU proiecte, departamente (voluntarul se poate inscrie intr-un departament/proiect)
+//   => UD voluntar (voluntarul poate iesi din asociatie/sa-si modifice datele)
 //3. => RU proiecte (sponsorizeaza proiect)
 
